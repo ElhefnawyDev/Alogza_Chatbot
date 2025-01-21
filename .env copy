@@ -1,0 +1,14 @@
+# Get your OpenAI API Key here: https://platform.openai.com/account/api-keys
+OPENAI_API_KEY=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
+
+# Generate a random secret: https://generate-secret.vercel.app/32 or `openssl rand -base64 32`
+AUTH_SECRET=a72868d494af20293d2f3b9e086e854a
+
+# The following keys below are automatically created and
+# added to your environment when you deploy on vercel
+
+# Instructions to create a Vercel Blob Store here: https://vercel.com/docs/storage/vercel-blob
+BLOB_READ_WRITE_TOKEN=****
+
+# Instructions to create a database here: https://vercel.com/docs/storage/vercel-postgres/quickstart
+POSTGRES_URL="postgresql://postgres:0114@localhost:5432/chatbot?schema=public"
