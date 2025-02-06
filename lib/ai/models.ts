@@ -8,6 +8,7 @@ export interface Model {
 }
 
 export const models: Array<Model> = [
+  // Existing OpenAI models
   {
     id: 'gpt-4o-mini',
     label: 'GPT 4o mini',
@@ -19,6 +20,13 @@ export const models: Array<Model> = [
     label: 'GPT 4o',
     apiIdentifier: 'gpt-4o',
     description: 'For complex, multi-step tasks',
+  },
+  // New Gemini model
+  {
+    id: 'gemini-pro',
+    label: 'Google Gemini',
+    apiIdentifier: 'gemini-1.5-pro', // Matches Google's model name
+    description: 'Google\'s advanced multimodal model with strong reasoning skills',
   },
 ] as const;
 
