@@ -61,7 +61,7 @@ export function PureMultimodalInput({
   // ... (keep existing useEffect and height adjustment logic)
 
   const submitForm = useCallback(() => {
-    window.history.replaceState({}, "", `/prompting/${chatId}`);
+    window.history.replaceState({}, "", `/chat/${chatId}`);
 
     // Prepend the fixed prompt to user input
     const promptedInput = PROMPT_TEMPLATE + input;
