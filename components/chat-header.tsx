@@ -7,11 +7,14 @@ import { useWindowSize } from 'usehooks-ts';
 import { ModelSelector } from '@/components/model-selector';
 import { SidebarToggle } from '@/components/sidebar-toggle';
 import { Button } from '@/components/ui/button';
-import { PlusIcon, VercelIcon } from './icons';
+import { PlusIcon } from './icons';
 import { useSidebar } from './ui/sidebar';
-import { memo } from 'react';
+import { memo, useState, useEffect } from 'react';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { VisibilityType, VisibilitySelector } from './visibility-selector';
+import { TokenCounter } from './TokenCounter';
+import { TokenDeductionRate } from './TokenDeductionRate';
+import { models } from '@/lib/ai/models';
 
 function PureChatHeader({
   chatId,
@@ -26,8 +29,36 @@ function PureChatHeader({
 }) {
   const router = useRouter();
   const { open } = useSidebar();
-
   const { width: windowWidth } = useWindowSize();
+  const modelsData = [
+    { modelId: "gpt-4", rate: 10 },
+    { modelId: "gpt-3.5", rate: 10 },
+    { modelId: "custom-ai", rate: 5 },
+  ];
+
+  // Token state
+  const [tokens, setTokens] = useState<number>(0);
+  const selectedModel = models.find((model) => model.id === selectedModelId);
+
+  // Fetch tokens function
+  const fetchTokens = async () => {
+    try {
+      const response = await fetch('/api/tokens'); // API to get token count
+      const data = await response.json();
+      if (data.tokens !== undefined) {
+        setTokens(data.tokens);
+      }
+    } catch (error) {
+      console.error('Error fetching tokens:', error);
+    }
+  };
+
+  // Fetch tokens on mount and every 10 seconds
+  useEffect(() => {
+    fetchTokens();
+    const interval = setInterval(fetchTokens, 10000); // Refresh every 10 seconds
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <header className="flex sticky top-0 bg-background py-1.5 items-center px-2 md:px-2 gap-2">
@@ -67,18 +98,17 @@ function PureChatHeader({
         />
       )}
 
-      <Button
-        className="bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-zinc-50 dark:text-zinc-900 hidden md:flex py-1.5 px-2 h-fit md:h-[34px] order-4 md:ml-auto"
-        asChild
-      >
-        <Link
-          href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fai-chatbot&env=AUTH_SECRET,OPENAI_API_KEY&envDescription=Learn%20more%20about%20how%20to%20get%20the%20API%20Keys%20for%20the%20application&envLink=https%3A%2F%2Fgithub.com%2Fvercel%2Fai-chatbot%2Fblob%2Fmain%2F.env.example&demo-title=AI%20Chatbot&demo-description=An%20Open-Source%20AI%20Chatbot%20Template%20Built%20With%20Next.js%20and%20the%20AI%20SDK%20by%20Vercel.&demo-url=https%3A%2F%2Fchat.vercel.ai&stores=%5B%7B%22type%22:%22postgres%22%7D,%7B%22type%22:%22blob%22%7D%5D"
-          target="_noblank"
-        >
-          <VercelIcon size={16} />
-          Deploy with Vercel
-        </Link>
-      </Button>
+      {/* Token Counter */}
+      {/* Token information on the right side */}
+      {!isReadonly && (
+        <div className="flex items-center gap-2 ml-auto order-last">
+          <TokenCounter tokens={tokens} className="hidden md:flex" />
+          <TokenDeductionRate selectedApiIdentifier={selectedModel?.apiIdentifier || ""} />
+          {/* For mobile, we'll only show one of them to save space */}
+          <TokenCounter tokens={tokens} className="md:hidden" />
+        </div>
+      )}
+
     </header>
   );
 }

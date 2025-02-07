@@ -1,3 +1,7 @@
+// Add these imports at the top
+import { and, eq, gte, or, sql } from 'drizzle-orm';
+import { user } from '@/lib/db/schema';
+
 import {
   type Message,
   convertToCoreMessages,
@@ -33,6 +37,8 @@ import {
 } from '@/lib/utils';
 
 import { generateTitleFromUserMessage } from '../../actions';
+import { db } from '@/lib/db/db';
+
 
 export const maxDuration = 60;
 
@@ -66,11 +72,48 @@ export async function POST(request: Request) {
     return new Response('Unauthorized', { status: 401 });
   }
 
-  const model = models.find((model) => model.id === modelId);
 
-  if (!model) {
-    return new Response('Model not found', { status: 404 });
+// First get the model information
+const model = models.find((model) => model.id === modelId);
+if (!model) {
+  return new Response('Model not found', { status: 404 });
+}
+
+// === TOKEN DEDUCTION LOGIC ===
+try {
+  // Determine token cost based on model
+  let tokenCost = 1;
+  if (model.apiIdentifier.includes('gemini')) {
+    tokenCost = model.rate!;
+  } else if (model.apiIdentifier.includes('gpt')) {
+    tokenCost = model.rate!;
   }
+
+  // Perform atomic deduction with model-specific cost
+  const deductionResult = await db
+    .update(user)
+    .set({ tokens: sql`${user.tokens} - ${tokenCost}` })
+    .where(and(
+      eq(user.id, session.user.id),
+      or(
+        gte(user.tokens, tokenCost),
+        sql`${user.lastTokenReset} IS NULL` // Allow first-time users
+      )
+    ))
+    .returning();
+
+  if (deductionResult.length === 0) {
+    return new Response(`Insufficient tokens. This model requires ${tokenCost} tokens per request.`, { 
+      status: 402
+    });
+  }
+  // Add to your existing deduction logic
+  console.log(`Deducting ${tokenCost} tokens for model: ${model.apiIdentifier}`);
+  console.log(`User ${session.user.id} now has ${deductionResult[0].tokens} tokens remaining`);
+} catch (error) {
+  console.error('Token deduction error:', error);
+  return new Response('Internal Server Error', { status: 500 });
+}
 
   const coreMessages = convertToCoreMessages(messages);
   const userMessage = getMostRecentUserMessage(coreMessages);
