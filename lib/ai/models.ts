@@ -26,14 +26,14 @@ export const models: Array<Model> = [
 
   },
   // New Gemini model
-  {
-    id: 'gemini-pro',
-    label: 'Google Gemini',
-    apiIdentifier: 'gemini-1.5-pro', // Matches Google's model name
-    description: 'Google\'s advanced multimodal model with strong reasoning skills',
-    rate: 5,
+  // {
+  //   id: 'gemini-pro',
+  //   label: 'Google Gemini',
+  //   apiIdentifier: 'gemini-1.5-pro', // Matches Google's model name
+  //   description: 'Google\'s advanced multimodal model with strong reasoning skills',
+  //   rate: 5,
 
-  },
+  // },
 ] as const;
 
 export const DEFAULT_MODEL_NAME: string = 'gpt-4o-mini';
