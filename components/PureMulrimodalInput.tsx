@@ -143,6 +143,9 @@ const SendButton = memo(
   ),
   (prevProps, nextProps) => prevProps.input === nextProps.input
 );
+
+SendButton.displayName = "SendButton";
+
 function PureStopButton({
   stop,
   setMessages,

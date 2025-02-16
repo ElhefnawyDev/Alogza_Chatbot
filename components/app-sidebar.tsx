@@ -18,7 +18,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
     <Sidebar className="group-data-[side=left]:border-r-0">
       <SidebarHeader>
         <SidebarMenu>
-          <div className="flex flex-col gap-3 px-2 py-2">
+          <div className="flex flex-col gap-3 p-2">
             <Link
               href="/"
               onClick={() => {
@@ -38,7 +38,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                 router.refresh();
               }}
             >
-              <PlusIcon className="h-5 w-5" />
+              <PlusIcon className="size-5" />
               <span>New Chat</span>
             </button>
             <button
@@ -49,7 +49,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                 router.refresh();
               }}
             >
-              <Wand2Icon className="h-5 w-5" />
+              <Wand2Icon className="size-5" />
               <span>Prompt Generator</span>
             </button>
           </div>

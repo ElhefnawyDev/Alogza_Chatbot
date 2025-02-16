@@ -22,7 +22,7 @@ function PureTokenCounter({ tokens, className }: TokenCounterProps) {
             className
           )}
         >
-          <Coins className="h-4 w-4" />
+          <Coins className="size-4" />
           <span className="tabular-nums">{tokens.toLocaleString()}</span>
         </div>
       </TooltipTrigger>

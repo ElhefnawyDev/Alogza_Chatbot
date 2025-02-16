@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import cron from 'node-cron';
+import {schedule} from 'node-cron'
 import { db } from '@/lib/db/db';
 import { user } from '@/lib/db/schema'; // Import your users table
 
@@ -14,7 +14,7 @@ async function resetTokens() {
 }
 
 // Schedule job to run every 5 minutes
-cron.schedule('*/5 * * * *', async () => {
+schedule('*/5 * * * *', async () => {
   await resetTokens();
 });
 

@@ -3,6 +3,7 @@ import { and, eq, gte, or, sql } from 'drizzle-orm';
 import { user } from '@/lib/db/schema';
 
 import {
+  LanguageModelV1,
   type Message,
   convertToCoreMessages,
   createDataStreamResponse,
@@ -145,7 +146,7 @@ try {
       });
 
       const result = streamText({
-        model: customModel(model.apiIdentifier),
+        model: customModel(model.apiIdentifier) as LanguageModelV1,
         system: systemPrompt,
         messages: coreMessages,
         maxSteps: 5,
@@ -199,7 +200,7 @@ try {
 
               if (kind === 'text') {
                 const { fullStream } = streamText({
-                  model: customModel(model.apiIdentifier),
+                  model: customModel(model.apiIdentifier) as LanguageModelV1,
                   system:
                     'Write about the given topic. Markdown is supported. Use headings wherever appropriate.',
                   prompt: title,
@@ -222,7 +223,7 @@ try {
                 dataStream.writeData({ type: 'finish', content: '' });
               } else if (kind === 'code') {
                 const { fullStream } = streamObject({
-                  model: customModel(model.apiIdentifier),
+                  model: customModel(model.apiIdentifier) as LanguageModelV1,
                   system: codePrompt,
                   prompt: title,
                   schema: z.object({
@@ -312,7 +313,7 @@ try {
 
               if (document.kind === 'text') {
                 const { fullStream } = streamText({
-                  model: customModel(model.apiIdentifier),
+                  model: customModel(model.apiIdentifier) as LanguageModelV1,
                   system: updateDocumentPrompt(currentContent, 'text'),
                   prompt: description,
                   experimental_providerMetadata: {
@@ -342,7 +343,7 @@ try {
                 dataStream.writeData({ type: 'finish', content: '' });
               } else if (document.kind === 'code') {
                 const { fullStream } = streamObject({
-                  model: customModel(model.apiIdentifier),
+                  model: customModel(model.apiIdentifier) as LanguageModelV1,
                   system: updateDocumentPrompt(currentContent, 'code'),
                   prompt: description,
                   schema: z.object({
@@ -425,7 +426,7 @@ try {
               > = [];
 
               const { elementStream } = streamObject({
-                model: customModel(model.apiIdentifier),
+                model: customModel(model.apiIdentifier) as LanguageModelV1,
                 system:
                   'You are a help writing assistant. Given a piece of writing, please offer suggestions to improve the piece of writing and describe the change. It is very important for the edits to contain full sentences instead of just words. Max 5 suggestions.',
                 prompt: document.content,

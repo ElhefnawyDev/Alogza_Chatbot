@@ -1,0 +1,1 @@
+ALTER TABLE "User" ADD COLUMN "lastTokenReset" timestamp DEFAULT now();

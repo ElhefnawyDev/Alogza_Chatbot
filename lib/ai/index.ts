@@ -12,7 +12,7 @@ const google = createGoogleGenerativeAI({
 export const customModel = (apiIdentifier: string) => {
   if (apiIdentifier.includes('gemini')) {
     return wrapLanguageModel({
-      model: google(apiIdentifier),
+      model: google(apiIdentifier) as LanguageModelV1,
       middleware: customMiddleware,
     });
   } else if (apiIdentifier.includes('gpt')) {

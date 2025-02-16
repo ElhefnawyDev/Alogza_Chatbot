@@ -27,7 +27,7 @@ function PureTokenDeductionRate({ selectedApiIdentifier, className }: TokenDeduc
             className
           )}
         >
-          <Zap className="h-4 w-4" />
+          <Zap className="size-4" />
           <span className="tabular-nums">{selectedModel?.rate || "N/A"}/msg</span>
         </div>
       </TooltipTrigger>
